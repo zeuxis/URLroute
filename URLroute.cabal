@@ -20,6 +20,7 @@ source-repository head
 
 library
   ghc-options:      -Wall
+                    -fno-warn-name-shadowing
   hs-source-dirs:   src
-  build-depends:    base >= 4 && < 5,
+  build-depends:    base >= 4 && < 5
   exposed-modules:  Web.Route

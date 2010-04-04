@@ -49,8 +49,8 @@ uf ==> f = let (builder, disp) = uf R.==> f
            in (builder nullURI, disp)
 
 -- URL combinators
-int :: CheckValue Int
-int = checkValue "<int>" readMaybe show
+int :: String ->  CheckValue Int
+int name = checkValue name readMaybe show
 
 checkEven :: CheckValue_
 checkEven = checkValue_ "<even>" (maybe False even . readMaybe) (show 0)
@@ -62,9 +62,9 @@ checkEven = checkValue_ "<even>" (maybe False even . readMaybe) (show 0)
                   ==> "b/a"
 (bC,  dC)   = root </ "c" </ string "<c>"
                   ==> ("c/"++)
-(bD1, dD1)  = root </ "d1" </ int
+(bD1, dD1)  = root </ "d1" </ int "<int>"
                   ==> \i -> "d1/" ++ show i
-(bD2, dD2)  = root </ "d2" </ int </ int
+(bD2, dD2)  = root </ "d2" </ int "<int>" </ int "<int>"
                   ==> \i j -> "d2/" ++ show i ++ "/" ++ show j
 (bD3, dD3)  = root </ "d3" </ checkEven
                   ==> "d3/even"
@@ -89,7 +89,7 @@ checkEven = checkValue_ "<even>" (maybe False even . readMaybe) (show 0)
 
 (bP1, dP1)  = root </ "p" <& "a" := "a" <& "b" := "b"
                   ==> "a=a"
-(bP2, dP2)  = root </ "p" <& "a" := string "<a>" <& "b" := int
+(bP2, dP2)  = root </ "p" <& "a" := string "<a>" <& "b" := int "<b>"
                   ==> \val i -> "a:" ++ val ++ " b:" ++ show i
 (bQ,  dQ)   = root </ "q" <& end
                   ==> "q end"

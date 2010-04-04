@@ -20,11 +20,12 @@
 Consider the following fragment:
 
     -- URL for a article page
-    (buildArticle, dispatchArticle) = root </ "blog" </ string
+    (buildArticle, dispatchArticle) = root </ "blog" </ string "<article>"
                                       ==> \article -> ... generate page ...
 
     -- URL for a comment
-    (buildComment, dispatchComment) = root </ "blog" </ string <& "comment" := int
+    (buildComment, dispatchComment) = root </ "blog" </ string "<article>"
+                                                     <& "comment" := int "<commentno>"
                                       ==> \article commentNo -> ... generate comment ...
 
     dispatchBlog :: URL -> Page
@@ -37,5 +38,3 @@ an URL is returned, i.e.
 
     > buildComment "test" 1
     /blog/test?comment=1
-
-
