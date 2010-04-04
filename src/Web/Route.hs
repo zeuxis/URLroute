@@ -202,7 +202,7 @@ data CheckValue_   = CheckValue_ String (String -> Bool)    String
 
 instance PathFilter (CheckValue p) where
     type PathFilterArgs (CheckValue p) = Arg p
-    pathFilter (CheckValue desc parse show) = URLFilter{..}
+    pathFilter (CheckValue _ parse show) = URLFilter{..}
       where
         ufSelect ([], _)      = Nothing
         ufSelect (p:ps, qry)
@@ -213,7 +213,7 @@ instance PathFilter (CheckValue p) where
 
 instance PathFilter CheckValue_ where
     type PathFilterArgs CheckValue_ = NoArg
-    pathFilter (CheckValue_ desc parse path) = URLFilter{..}
+    pathFilter (CheckValue_ _ parse path) = URLFilter{..}
       where
         ufSelect ([],_) = Nothing
         ufSelect ((p:ps), qry)
@@ -227,7 +227,7 @@ instance PathFilter String where
     pathFilter str = pathFilter $ CheckValue_ str (==str) str
 
 string :: String -> CheckValue String
-string name = CheckValue name Just id
+string desc = CheckValue desc Just id
 
 checkValue :: String -> (String -> Maybe a) -> (a -> String) -> CheckValue a
 checkValue = CheckValue
@@ -257,7 +257,7 @@ data CheckFullPath_  = CheckFullPath_ String ([String] -> Bool)    [String]
 
 instance PathFilter (CheckFullPath p) where
     type PathFilterArgs (CheckFullPath p) = Arg p
-    pathFilter (CheckFullPath desc parse show) = URLFilter{..}
+    pathFilter (CheckFullPath _ parse show) = URLFilter{..}
       where
         ufSelect (ps, qry)
           | Just x <- parse ps = Just (([], qry), Arg x)
@@ -267,7 +267,7 @@ instance PathFilter (CheckFullPath p) where
 
 instance PathFilter CheckFullPath_ where
     type PathFilterArgs CheckFullPath_ = NoArg
-    pathFilter (CheckFullPath_ desc parse defaultPath) = URLFilter{..}
+    pathFilter (CheckFullPath_ _ parse defaultPath) = URLFilter{..}
       where
         ufSelect (ps, qry)
           | parse ps  = Just (([], qry), NoArg)
@@ -318,7 +318,7 @@ instance (ValueFilter v)=> QueryFilter (QuerySelector v) where
 
 instance ValueFilter (CheckValue v) where
     type ValueFilterArgs (CheckValue v) = Arg v
-    valueFilter k (CheckValue name parse show) = URLFilter{..}
+    valueFilter k (CheckValue _ parse show) = URLFilter{..}
       where
         ufSelect (ps, qry) = do
           val <- lookup k qry
@@ -329,7 +329,7 @@ instance ValueFilter (CheckValue v) where
 
 instance ValueFilter CheckValue_ where
     type ValueFilterArgs CheckValue_ = NoArg
-    valueFilter k (CheckValue_ name parse defaultValue) = URLFilter{..}
+    valueFilter k (CheckValue_ _ parse defaultValue) = URLFilter{..}
       where
         ufSelect (ps, qry) = do
           val <- lookup k qry
