@@ -155,34 +155,12 @@ idF  = URLFilter {
        }
 root = idF
 
--- -- | Supply a value function with a constant value
--- pureF :: a -> URLFilter (a -> r) r
--- pureF x = URLFilter (\(ui, f) -> Just (ui, f x))
---                     (\(ui, x) -> (ui, const x))
-
--- -- | Apply the function present in the filter parameters
--- apF :: (Monad m)=> URLFilter m (b -> r) ((a -> b) -> a -> r)
--- apF = fmap curry . liftF $ uncurry ($)
-
--- -- | Lift a function to the parameter of filter functions
--- liftF :: (Monad m)=> (a -> b) -> URLFilter m (b -> r) (a -> r)
--- liftF f = URLFilter $ fmap (liftM (. f))
-
--- -- | Lift a binary function to the parameter of filter functions
--- liftF2 :: (Monad m)=> (a -> b -> c)
---                         -> URLFilter m (c -> r) (a -> b -> r)
--- liftF2 op = apF <> liftF op
-
--- -- | Lift a ternary function to the parameter of filter functions
--- liftF3 :: (Monad m)=> (a -> b -> c -> d)
---                         -> URLFilter m (d -> r) (a -> b -> c -> r)
--- liftF3 op = apF <> apF <> liftF op
-
--- -- | Joins two 'URLFilter's
--- joinF :: (Monad m)=> (a -> a -> a)
---                      -> URLFilter m b a -> URLFilter m b a -> URLFilter m b a
--- joinF op (URLFilter f1) (URLFilter f2) =
---     URLFilter $ \sel -> join (liftOp op) (f1 sel) (f2 sel)
+-- | Supply a constant value
+pureF :: a -> URLFilter (Arg a)
+pureF x = URLFilter{..}
+  where
+    ufSelect ui  = Just (ui, Arg x)
+    ufBuild  ui _ = ui
 
 -----------------------
 -- URL Path selectors
